@@ -1,0 +1,23 @@
+{
+ "name": "Yemen Restaurant – مطعم اليمن",
+ "short_name": "Yemen",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#12203f",
+ "theme_color": "#12203f",
+ "lang": "de",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
