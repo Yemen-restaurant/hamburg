@@ -884,7 +884,7 @@ const M=[
 const MENU_ADD=6.3;
 /* ---------- Website-Einstellungen (vom Admin änderbar) ---------- */
 const SD={
- accent:'#e0a33e',ann:'Demo-Entwurf · Bestellungen und Reservierungen werden noch nicht an das Restaurant übermittelt.',
+ accent:'#e0a33e',ann:'',
  t:{h1a:'Jemenitische Küche.',h1b:'Mitten in St. Georg.',lede:'Mandi aus dem Tandoor, Fahsa im heißen Steintopf und frisches Brot – am Steindamm 71.',
   s1:'Tandoor.',s2:'Steintopf.',s3:'Gewürze.',s4:'Jemen.',
   f1:'Unser Mandi gart stundenlang im Tandoor, bis das Fleisch vom Knochen fällt und der Reis den ganzen Geschmack aufnimmt.',
@@ -906,7 +906,7 @@ const SD={
  near:{"on": true, "pct": 5, "r": 300, "valid": 120, "cool": 24, "lat": 53.55463, "lon": 10.01556, "ttl": "Du bist ganz in der Nähe! 👋", "txt": "Komm kurz vorbei und hol dir heute {pct} % Rabatt auf deine Bestellung.", "ttl_ar": "أنت قريب منّا! 👋", "txt_ar": "تفضّل عندنا واحصل اليوم على خصم {pct}٪ على طلبك."},
  ta:{"h1a": "مطبخ يمني أصيل.", "h1b": "في قلب سانت جورج.", "lede": "مندي من التنور، وفحسة تغلي في القدر الحجري، وخبز طازج – في شارع Steindamm 71.", "s1": "تنور.", "s2": "قدر حجري.", "s3": "بهارات.", "s4": "اليمن.", "f1": "المندي عندنا يُطهى ساعات في التنور حتى ينفصل اللحم عن العظم ويتشرّب الأرز كل النكهة.", "f2": "الفحسة والسلتة تصل إلى طاولتك وهي تغلي في القدر الحجري – مع خبز طازج للتغميس. كل شيء حلال.", "kh": "أطباقنا الأساسية", "v1": "توصيل", "v1s": "اطلب أونلاين ونوصل طعامك إلى بيتك. الدفع عند التوصيل.", "v2": "اطلب من الطاولة", "v2s": "جالس عندنا؟ امسح رمز QR على طاولتك واطلب من هاتفك وادفع في النهاية براحتك.", "v3": "احجز طاولة", "v3s": "لشخصين أو للعائلة كلها: احجز طاولتك في دقيقة – أو اسأل مساعدنا.", "gh": "من مطبخنا", "vh": "زورونا", "menuIntro": "كل شيء يُحضَّر طازجاً. اضغط على + واختر طلبك."},
  wallet:{on:false,api:'',site:''},
- mar:{},ann_ar:'نسخة تجريبية · الطلبات والحجوزات لا تُرسل للمطعم بعد.'
+ mar:{},ann_ar:''
 };
 const clone=o=>JSON.parse(JSON.stringify(o));
 const deep=(a,b)=>{if(b&&typeof b==='object'&&!Array.isArray(b)){const o=Object.assign({},a);Object.keys(b).forEach(k=>{o[k]=a&&typeof a[k]==='object'&&a[k]&&!Array.isArray(a[k])?deep(a[k],b[k]):b[k]});return o}return b===undefined?a:b};
@@ -949,7 +949,7 @@ function chk(){const n=neuN();if(n>nn&&adm){beep();const o=db.o.filter(x=>x.st==
 function save(){let ok=true;if(!FBon){try{localStorage.setItem(K,JSON.stringify(db))}catch(e){ok=false}}chk();if(FBon)sync();return ok}
 addEventListener('storage',e=>{if(!FBon&&e.key===K){db=load();chk();if(route()==='admin')render()}});
 /* ---------- Firebase (gemeinsame Datenbank) ---------- */
-const ADMIN_EM='admin@yemen.demo',KITCHEN_EM='kueche@yemen.demo';
+const ADMIN_EM='admin@yemen-restaurant.de',KITCHEN_EM='kueche@yemen-restaurant.de';
 let menuLoaded=false,FBon=false,staff=false,rem={o:{},r:{},v:{},cfg:'',im:{}};
 const jx=o=>JSON.stringify(o,(k,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.keys(x).sort().reduce((a,y)=>(a[y]=x[y],a),{}):x);
 const cfgOf=()=>({off:db.off,pr:db.pr,x:db.x,ed:db.ed||{},seeded:1});
@@ -1291,7 +1291,7 @@ const sig=()=>`\n\nYemen Restaurant · ${S.c.addr1}, ${S.c.addr2} · ${S.c.tel}`
 async function mailTo(to,name,subject,message){try{const r=await sendMail(to,name,subject,message);if(r==='ok')toast('E-Mail an '+to+' gesendet');else if(r==='off')toast('E-Mail nicht gesendet: E-Mail-Versand ist noch nicht eingerichtet (Admin › Website › E-Mail)',1);return r}catch(e){console.warn(e);toast('E-Mail konnte nicht gesendet werden',1);return 'err'}}
 
 /* ================= PERSONAL ================= */
-const KELLNER_EM='kellner@yemen.demo';
+const KELLNER_EM='kellner@yemen-restaurant.de';
 const ROLE_N={admin:'Admin',kellner:'Kellner',kueche:'Küche'};
 const ROLES_OF=e=>e===ADMIN_EM?['admin','kellner','kueche']:e===KITCHEN_EM?['kueche','kellner']:e===KELLNER_EM?['kellner']:[];
 let selRole=(()=>{try{return sessionStorage.getItem('bbRole')||''}catch(e){return ''}})();
@@ -1306,12 +1306,12 @@ function admDrawer(){return `<div class="dh"><img src="${IMG.wm}" alt="Yemen Res
 let lstep=null;
 function Admin(){if(!adm){
   if(!lstep)return `<div class="w lw"><h2>Personal-Bereich</h2><p class="mu">Wer bist du?</p><div class="roles">${Object.entries(ROLE_N).map(([k,n])=>`<button class="role" onclick="lstep='${k}';render()"><span>${{admin:'👔',kellner:'🍽',kueche:'👨‍🍳'}[k]}</span><b>${n}</b><small>${{admin:'Alles: Kasse, Umsatz, Website',kellner:'Tische, Bestellungen, Rechnungen',kueche:'Küchenmonitor'}[k]}</small></button>`).join('')}</div><p style="margin-top:20px"><a href="#home" class="mu">← Zur Website</a></p></div>`;
-  return `<div class="w lw"><button class="btn g s" onclick="lstep=null;render()">← Andere Rolle</button><h2 style="margin-top:14px">Anmelden als ${ROLE_N[lstep]}</h2><div class="card" data-act="login"><label for="lu">E-Mail</label><input id="lu" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')$('#lp').focus()"><label for="lp">Passwort</label><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"><button class="btn" style="width:100%;justify-content:center;min-height:50px" onclick="login()">Anmelden</button><p class="demo-note">Demo-Zugang: beliebige E-Mail · Passwort <b>demo</b></p></div></div>`}
+  return `<div class="w lw"><button class="btn g s" onclick="lstep=null;render()">← Andere Rolle</button><h2 style="margin-top:14px">Anmelden als ${ROLE_N[lstep]}</h2><div class="card" data-act="login"><label for="lu">E-Mail</label><input id="lu" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')$('#lp').focus()"><label for="lp">Passwort</label><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"><button class="btn" style="width:100%;justify-content:center;min-height:50px" onclick="login()">Anmelden</button><p class="demo-note">Benutzername: admin, kueche oder kellner</p></div></div>`}
  if(!myTabs().includes(at))at=myTabs()[0];
  return `<div class="w"><h2>${TABS[at]}</h2>${{kasse:Kasse,abh:Abholung,tische:Tische,kds:Kds,online:Online,karte:Karte,res:ResA,club:ClubA,stat:Stat,rev:RevA,site:Site,qr:QR}[at]()}</div>`}
 const ALIAS={kueche:KITCHEN_EM,'küche':KITCHEN_EM,admin:ADMIN_EM,kellner:KELLNER_EM};
 let logging=false;
-async function login(){if(logging)return;const raw=v('lu').trim().toLowerCase(),em=ALIAS[raw]||raw;if(!FBon){if(v('lp')!=='demo'){toast('Demo-Zugang: Passwort „demo“',1);return}selRole=lstep||'admin';staff=true;adm=true;role=selRole;at=myTabs()[0];unlockAudio();render();return}if(!em||!v('lp')){toast('Bitte E-Mail und Passwort eingeben.',1);return}
+async function login(){if(logging)return;const raw=v('lu').trim().toLowerCase(),em=ALIAS[raw]||raw;if(!FBon){toast('Keine Verbindung zum Server. Bitte Internet prüfen und Seite neu laden.',1);return}if(!em||!v('lp')){toast('Bitte E-Mail und Passwort eingeben.',1);return}
  selRole=lstep||'admin';try{sessionStorage.setItem('bbRole',selRole)}catch(e){}
  unlockAudio();askNotify();logging=true;try{await FB.login(em,v('lp'));unlockAudio()}catch(e){toast('E-Mail oder Passwort falsch.',1)}logging=false}
 function logout(){lstep=null;try{sessionStorage.removeItem('bbRole')}catch(e){}if(FBon)FB.logout();else{adm=false;role=null;render()}}
@@ -1640,7 +1640,41 @@ renderChrome();render();
 if(window.FB)initFB();else addEventListener('fbready',initFB);
 setInterval(()=>{if(route()==='home')updHome()},60000);
 </script>
-<!-- Firebase (gemeinsame Datenbank) ist in der Demo deaktiviert. Für den Livebetrieb hier ein eigenes Firebase-Projekt des Restaurants eintragen. -->
+<script type="module">
+const V='10.14.1',B='https://www.gstatic.com/firebasejs/'+V+'/';
+Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]).then(([A,U,S])=>{
+const app=A.initializeApp({"apiKey": "AIzaSyAzLQqg6DnPe1LvaLmjShMpToxoixTikNk", "authDomain": "yemen-restaurant-94dc9.firebaseapp.com", "projectId": "yemen-restaurant-94dc9", "storageBucket": "yemen-restaurant-94dc9.firebasestorage.app", "messagingSenderId": "821677553613", "appId": "1:821677553613:web:604f67c8b643394586b684"});
+const auth=U.getAuth(app);
+let fs;
+try{fs=S.initializeFirestore(app,{localCache:S.persistentLocalCache({tabManager:S.persistentMultipleTabManager()})})}catch(e){try{fs=S.getFirestore(app)}catch(e2){fs=S.initializeFirestore(app,{})}}
+const clean=d=>JSON.parse(JSON.stringify(d));
+const subs={};
+const sub=(k,mk)=>{if(subs[k])return;subs[k]=mk()};
+const unsub=k=>{if(subs[k]){subs[k]();delete subs[k]}};
+const err=k=>e=>console.warn('Firestore '+k,e);
+window.FB={ok:true,
+ onAuth:cb=>U.onAuthStateChanged(auth,u=>cb(u?u.email:null)),
+ login:(e,p)=>U.signInWithEmailAndPassword(auth,e,p),
+ logout:()=>U.signOut(auth),
+ put:(c,id,d)=>S.setDoc(S.doc(fs,c,String(id)),clean(d)),
+ del:(c,id)=>S.deleteDoc(S.doc(fs,c,String(id))),
+ nextId:()=>S.runTransaction(fs,async tx=>{const r=S.doc(fs,'meta','counter'),s=await tx.get(r);let n;if(s.exists()){n=s.data().n+1;tx.update(r,{n})}else{n=101;tx.set(r,{n})}return n}),
+ get:(c,id)=>S.getDoc(S.doc(fs,c,String(id))).then(s=>s.exists()?s.data():null),
+ watchDoc:(c,id,cb)=>sub('d_'+c+id,()=>S.onSnapshot(S.doc(fs,c,String(id)),s=>cb(s.exists()?s.data():null),err(c+'/'+id))),
+ watchMenu:cb=>sub('menu',()=>S.onSnapshot(S.doc(fs,'config','menu'),s=>cb(s.exists()?s.data():{}),err('menu'))),
+ watchSite:cb=>sub('site',()=>S.onSnapshot(S.doc(fs,'config','site'),s=>cb(s.exists()?s.data():{}),err('site'))),
+ watchImages:cb=>sub('im',()=>S.onSnapshot(S.collection(fs,'images'),s=>{const m={};s.forEach(d=>{m[d.id]=d.data().d});cb(m)},err('images'))),
+ watchReviews:(all,cb)=>{unsub(all?'rvp':'rva');sub(all?'rva':'rvp',()=>S.onSnapshot(all?S.collection(fs,'reviews'):S.query(S.collection(fs,'reviews'),S.where('a','==',1)),s=>cb(s.docs.map(d=>d.data())),err('reviews')))},
+ watchOrders:cb=>sub('ord',()=>S.onSnapshot(S.query(S.collection(fs,'orders'),S.orderBy('t','desc'),S.limit(500)),s=>cb(s.docs.map(d=>d.data())),err('orders'))),
+ watchRes:cb=>sub('res',()=>S.onSnapshot(S.collection(fs,'reservations'),s=>cb(s.docs.map(d=>d.data())),err('res'))),
+ watchLoy:(cb,eb)=>sub('loy',()=>S.onSnapshot(S.collection(fs,'loyalty'),s=>cb(s.docs.map(d=>Object.assign({k:d.id},d.data()))),e=>{console.warn('Firestore loyalty',e);eb&&eb(e)})),
+ watchPager:(k,cb)=>S.onSnapshot(S.doc(fs,'pager',String(k)),s=>cb(s.exists()?s.data():null),e=>{console.warn('Firestore pager',e);cb(null,e)}),
+ stopStaff:()=>{['ord','res','rva','loy'].forEach(unsub)}
+};
+dispatchEvent(new Event('fbready'));
+}).catch(e=>{console.info('Offline-Modus: Firebase nicht erreichbar');window.FBfail=1;dispatchEvent(new Event('fbfail'))});
+
+</script>
 <script src="wallet-config.js"></script><script>
 //---------------------------------------------------------------------
 //
